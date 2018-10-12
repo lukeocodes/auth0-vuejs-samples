@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import 'jquery';
+import 'bootstrap';
 import NavBar from './components/NavBar';
 
 export default {
