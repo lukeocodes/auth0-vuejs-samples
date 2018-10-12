@@ -1,5 +1,7 @@
 <template>
-  <h1>Auth0 Vue.js Sample</h1>
+  <div class="container">
+    <h1>Vue.js Sample App</h1>
+  </div>
 </template>
 
 <script>
