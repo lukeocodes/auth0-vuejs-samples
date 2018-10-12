@@ -7,6 +7,10 @@ export default new Vuex.Store({
   state: {
     loggedIn: false
   },
-  mutations: {},
+  mutations: {
+    setLoginState(state, value) {
+      state.loggedIn = value;
+    }
+  },
   actions: {}
 });

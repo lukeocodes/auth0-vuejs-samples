@@ -25,20 +25,27 @@
 
 <script>
 import { mapState } from "vuex";
+import auth from "../authService";
 
 export default {
   name: "NavBar",
   methods: {
     login() {
-      console.log("Logging in..");
+      auth.login();
     },
     logout() {
-      console.log("Logging out..");
+      auth.logOut();
     }
   },
-  computed: mapState({
-    loggedIn: "loggedIn"
-  })
+  data() {
+    return {
+      loggedIn: false
+    }
+  },
+  created() {
+    this.loggedIn = auth.isAuthenticated();
+    auth.addListener('loginStateChanged', value => this.loggedIn = value.loggedIn);
+  }
 };
 </script>
 

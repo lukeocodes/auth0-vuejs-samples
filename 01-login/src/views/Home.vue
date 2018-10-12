@@ -1,5 +1,7 @@
 <template>
-  <h1>Vue.js Sample</h1>
+  <div>
+    <h1>Vue.js Sample</h1>
+  </div>
 </template>
 
 <script>
