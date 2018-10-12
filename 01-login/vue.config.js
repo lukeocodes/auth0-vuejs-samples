@@ -2,7 +2,7 @@ const webpack = require('webpack');
 
 module.exports = {
   devServer: {
-    port: 3000
+    port: 3002
   },
   configureWebpack: {
     plugins: [

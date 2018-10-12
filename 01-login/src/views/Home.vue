@@ -1,13 +1,10 @@
 <template>
-  <div class="container">
-    <h1>Vue.js Sample App</h1>
-  </div>
+  <h1>Vue.js Sample</h1>
 </template>
 
 <script>
 export default {
   name: "home",
-  components: {
-  }
+  components: {}
 };
 </script>

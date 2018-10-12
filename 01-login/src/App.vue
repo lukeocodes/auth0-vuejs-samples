@@ -1,14 +1,16 @@
 <template>
   <div id="app">
     <nav-bar />
-    <router-view />
+    <div class="container">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <script>
-import 'jquery';
-import 'bootstrap';
-import NavBar from './components/NavBar';
+import "jquery";
+import "bootstrap";
+import NavBar from "./components/NavBar";
 
 export default {
   components: {
@@ -18,5 +20,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
 </style>
