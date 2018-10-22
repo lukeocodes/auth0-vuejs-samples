@@ -35,16 +35,20 @@ export default {
     },
     logout() {
       auth.logOut();
+      this.$router.push({ path: "/" });
     }
   },
   data() {
     return {
       loggedIn: false
-    }
+    };
   },
   created() {
     this.loggedIn = auth.isAuthenticated();
-    auth.addListener('loginStateChanged', value => this.loggedIn = value.loggedIn);
+    auth.addListener(
+      "loginStateChanged",
+      value => (this.loggedIn = value.loggedIn)
+    );
   }
 };
 </script>

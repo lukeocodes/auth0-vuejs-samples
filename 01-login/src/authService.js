@@ -3,27 +3,27 @@ import { EventEmitter } from "events";
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  redirectUri: location.href + "callback/popup",
+  redirectUri: "http://localhost:3000/callback/popup",
   clientID: process.env.VUE_APP_AUTH0_CLIENTID,
   responseType: "id_token",
   scope: "openid profile email"
 });
 
-class AuthService extends EventEmitter {
-  idToken = null;
-  profile = null;
-  tokenExpiry = null;
+let idToken = null;
+let profile = null;
+let tokenExpiry = null;
 
+class AuthService extends EventEmitter {
   login() {
     webAuth.popup.authorize({}, (err, result) => {
       if (err) {
-        alert(err);
+        console.error(err);
       } else {
         localStorage.setItem("loggedIn", "true");
 
-        this.idToken = result.idToken;
-        this.profile = result.idTokenPayload;
-        this.tokenExpiry = new Date(this.profile.exp * 1000);
+        idToken = result.idToken;
+        profile = result.idTokenPayload;
+        tokenExpiry = new Date(profile.exp * 1000);
 
         this.emit("loginStateChanged", {
           loggedIn: true,
@@ -35,9 +35,11 @@ class AuthService extends EventEmitter {
 
   logOut() {
     localStorage.removeItem("loggedIn");
-    this.idToken = null;
-    this.tokenExpiry = null;
-    this.profile = null;
+
+    idToken = null;
+    tokenExpiry = null;
+    profile = null;
+
     this.emit("loginStateChanged", { loggedIn: false });
   }
 
@@ -46,11 +48,42 @@ class AuthService extends EventEmitter {
   }
 
   isIdTokenValid() {
-    return this.idToken && this.tokenExpiry && this.tokenExpiry > new Date();
+    return this.idToken && this.tokenExpiry && this.tokenExpiry > Date.now();
   }
 
   popupCallBack() {
     webAuth.popup.callback({});
+  }
+
+  getIdToken() {
+    return new Promise((resolve, reject) => {
+      if (this.isIdTokenValid()) {
+        resolve(this.idToken);
+      } else {
+        webAuth.checkSession({}, (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            console.log(result);
+
+            idToken = result.idToken;
+            profile = result.idTokenPayload;
+            tokenExpiry = new Date(profile.exp * 1000);
+
+            if (!this.isAuthenticated()) {
+              localStorage.setItem("loggedIn", "true");
+
+              this.emit("loginStateChanged", {
+                loggedIn: true,
+                profile: result.idTokenPayload
+              });
+            }
+
+            resolve(this.idToken);
+          }
+        });
+      }
+    });
   }
 }
 
