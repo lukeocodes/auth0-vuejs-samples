@@ -3,44 +3,52 @@ import { EventEmitter } from "events";
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
-  redirectUri: "http://localhost:3000/callback/popup",
+  redirectUri: "http://localhost:3000/callback",
   clientID: process.env.VUE_APP_AUTH0_CLIENTID,
   responseType: "id_token",
   scope: "openid profile email"
 });
 
-let idToken = null;
-let profile = null;
-let tokenExpiry = null;
-
 class AuthService extends EventEmitter {
+  idToken = null;
+  profile = null;
+  tokenExpiry = null;
+
   login() {
-    webAuth.popup.authorize({}, (err, result) => {
-      if (err) {
-        console.error(err);
-      } else {
-        localStorage.setItem("loggedIn", "true");
-
-        idToken = result.idToken;
-        profile = result.idTokenPayload;
-        tokenExpiry = new Date(profile.exp * 1000);
-
-        this.emit("loginStateChanged", {
-          loggedIn: true,
-          profile: result.idTokenPayload
-        });
-      }
-    });
+    webAuth.authorize({});
   }
 
   logOut() {
     localStorage.removeItem("loggedIn");
 
-    idToken = null;
-    tokenExpiry = null;
-    profile = null;
+    this.idToken = null;
+    this.tokenExpiry = null;
+    this.profile = null;
 
     this.emit("loginStateChanged", { loggedIn: false });
+  }
+
+  handleCallback() {
+    return new Promise((resolve, reject) => {
+      webAuth.parseHash((err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          localStorage.setItem("loggedIn", "true");
+
+          this.idToken = result.idToken;
+          this.profile = result.idTokenPayload;
+          this.tokenExpiry = new Date(this.profile.exp * 1000);
+
+          this.emit("loginStateChanged", {
+            loggedIn: true,
+            profile: result.idTokenPayload
+          });
+
+          resolve(result);
+        }
+      });
+    });
   }
 
   isAuthenticated() {
@@ -64,11 +72,9 @@ class AuthService extends EventEmitter {
           if (err) {
             reject(err);
           } else {
-            console.log(result);
-
-            idToken = result.idToken;
-            profile = result.idTokenPayload;
-            tokenExpiry = new Date(profile.exp * 1000);
+            this.idToken = result.idToken;
+            this.profile = result.idTokenPayload;
+            this.tokenExpiry = new Date(this.profile.exp * 1000);
 
             if (!this.isAuthenticated()) {
               localStorage.setItem("loggedIn", "true");

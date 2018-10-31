@@ -10,7 +10,7 @@
         <router-link to="/" class="nav-link">Home</router-link>
       </li>
       <li class="nav-item" v-if="!loggedIn">
-        <a id="qsLoginBtn" class="nav-link" @click.prevent="login">Login</a>
+        <a href="#" id="qsLoginBtn" class="nav-link" @click.prevent="login">Login</a>
       </li>
       <template v-if="loggedIn">
         <li class="nav-item">
