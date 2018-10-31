@@ -20,7 +20,7 @@
       </template>
     </ul>
     <span v-if="loggedIn && profile" class="navbar-text">
-      <img :src="profile.picture" :alt="profile.name" class="thumb">
+      <img :src="profile.picture" :alt="profile.name" class="thumb rounded-circle">
       {{ profile.name }}
     </span>
   </div>
@@ -64,6 +64,5 @@ export default {
 img.thumb {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
 }
 </style>
