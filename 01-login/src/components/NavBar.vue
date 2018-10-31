@@ -5,7 +5,7 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <router-link to="/" class="nav-link">Home</router-link>
       </li>
@@ -19,12 +19,15 @@
         <li class="nav-item"><a href="#" @click.prevent="logout" class="nav-link" id="qsLogoutBtn">Log Out</a></li>
       </template>
     </ul>
+    <span v-if="loggedIn && profile" class="navbar-text">
+      <img :src="profile.picture" :alt="profile.name" class="thumb">
+      {{ profile.name }}
+    </span>
   </div>
 </nav>  
 </template>
 
 <script>
-import { mapState } from "vuex";
 import auth from "../authService";
 
 export default {
@@ -40,15 +43,15 @@ export default {
   },
   data() {
     return {
-      loggedIn: false
+      loggedIn: false,
+      profile: {}
     };
   },
   created() {
-    this.loggedIn = auth.isAuthenticated();
-    auth.addListener(
-      "loginStateChanged",
-      value => (this.loggedIn = value.loggedIn)
-    );
+    auth.addListener("loginEvent", authResult => {
+      this.loggedIn = authResult.loggedIn;
+      this.profile = authResult.profile;
+    });
   }
 };
 </script>
@@ -56,5 +59,11 @@ export default {
 <style>
 .nav-link.router-link-exact-active {
   color: #fff !important;
+}
+
+img.thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 </style>

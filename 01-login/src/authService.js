@@ -9,6 +9,9 @@ const webAuth = new auth0.WebAuth({
   scope: "openid profile email"
 });
 
+const localStorageKey = "loggedIn";
+const loginEvent = "loginEvent";
+
 class AuthService extends EventEmitter {
   idToken = null;
   profile = null;
@@ -19,40 +22,30 @@ class AuthService extends EventEmitter {
   }
 
   logOut() {
-    localStorage.removeItem("loggedIn");
+    localStorage.removeItem(localStorageKey);
 
     this.idToken = null;
     this.tokenExpiry = null;
     this.profile = null;
 
-    this.emit("loginStateChanged", { loggedIn: false });
+    this.emit(loginEvent, { loggedIn: false });
   }
 
   handleCallback() {
     return new Promise((resolve, reject) => {
-      webAuth.parseHash((err, result) => {
+      webAuth.parseHash((err, authResult) => {
         if (err) {
           reject(err);
         } else {
-          localStorage.setItem("loggedIn", "true");
-
-          this.idToken = result.idToken;
-          this.profile = result.idTokenPayload;
-          this.tokenExpiry = new Date(this.profile.exp * 1000);
-
-          this.emit("loginStateChanged", {
-            loggedIn: true,
-            profile: result.idTokenPayload
-          });
-
-          resolve(result);
+          this.localLogin(authResult);
+          resolve(authResult.idToken);
         }
       });
     });
   }
 
   isAuthenticated() {
-    return localStorage.getItem("loggedIn") === "true";
+    return localStorage.getItem(localStorageKey) === "true";
   }
 
   isIdTokenValid() {
@@ -63,32 +56,35 @@ class AuthService extends EventEmitter {
     webAuth.popup.callback({});
   }
 
-  getIdToken() {
+  refreshAuthState() {
     return new Promise((resolve, reject) => {
       if (this.isIdTokenValid()) {
         resolve(this.idToken);
-      } else {
-        webAuth.checkSession({}, (err, result) => {
+      } else if (this.isAuthenticated()) {
+        webAuth.checkSession({}, (err, authResult) => {
           if (err) {
             reject(err);
           } else {
-            this.idToken = result.idToken;
-            this.profile = result.idTokenPayload;
-            this.tokenExpiry = new Date(this.profile.exp * 1000);
-
-            if (!this.isAuthenticated()) {
-              localStorage.setItem("loggedIn", "true");
-
-              this.emit("loginStateChanged", {
-                loggedIn: true,
-                profile: result.idTokenPayload
-              });
-            }
-
-            resolve(this.idToken);
+            this.localLogin(authResult);
+            resolve(authResult.idToken);
           }
         });
+      } else {
+        resolve();
       }
+    });
+  }
+
+  localLogin(authResult) {
+    this.idToken = authResult.idToken;
+    this.profile = authResult.idTokenPayload;
+    this.tokenExpiry = new Date(this.profile.exp * 1000);
+
+    localStorage.setItem(localStorageKey, "true");
+
+    this.emit(loginEvent, {
+      loggedIn: true,
+      profile: authResult.idTokenPayload
     });
   }
 }

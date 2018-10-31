@@ -11,10 +11,18 @@
 import "jquery";
 import "bootstrap";
 import NavBar from "./components/NavBar";
+import auth from "./authService";
 
 export default {
   components: {
     NavBar
+  },
+  async created() {
+    try {
+      await auth.refreshAuthState();
+    } catch (e) {
+      console.log(e);
+    }
   }
 };
 </script>
