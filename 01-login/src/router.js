@@ -22,7 +22,9 @@ export default new Router({
       component: Profile,
       beforeEnter: (to, from, next) => {
         if (!auth.isAuthenticated()) {
-          auth.login();
+          auth.login({
+            target: "/profile"
+          });
         } else {
           next();
         }

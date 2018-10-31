@@ -18,18 +18,20 @@
 
 <script>
 import auth from "../authService";
+import loginEventMixin from "../mixins/loginEvent";
 
 export default {
+  mixins: [loginEventMixin],
   data() {
     return {
       profile: auth.profile
     };
   },
-  created() {
-    auth.addListener("loginEvent", data => {
+  methods: {
+    handleLoginEvent(data) {
       this.profile = data.profile;
-    });
-  }
+    }
+  },
 };
 </script>
 

@@ -17,8 +17,10 @@ class AuthService extends EventEmitter {
   profile = null;
   tokenExpiry = null;
 
-  login() {
-    webAuth.authorize({});
+  login(customState) {
+    webAuth.authorize({
+      state: customState ? JSON.stringify(customState) : ""
+    });
   }
 
   logOut() {
@@ -84,9 +86,13 @@ class AuthService extends EventEmitter {
 
     this.emit(loginEvent, {
       loggedIn: true,
-      profile: authResult.idTokenPayload
+      profile: authResult.idTokenPayload,
+      state: authResult.state
     });
   }
 }
 
-export default new AuthService();
+const service = new AuthService();
+service.setMaxListeners(5);
+
+export default service;
