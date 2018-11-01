@@ -10,8 +10,8 @@ export default {
   mixins: [loginEventMixin],
   methods: {
     handleLoginEvent(data) {
-      if (data.state && data.state.target) {
-        this.$router.push(data.state.target);
+      if (data.stateJson && data.stateJson.target) {
+        this.$router.push(data.stateJson.target);
       } else {
         this.$router.push("/");
       }
