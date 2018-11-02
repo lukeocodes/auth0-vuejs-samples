@@ -9,20 +9,25 @@
       <li class="nav-item">
         <router-link to="/" class="nav-link">Home</router-link>
       </li>
-      <li class="nav-item" v-if="!loggedIn">
-        <a href="#" id="qsLoginBtn" class="nav-link" @click.prevent="login">Login</a>
-      </li>
       <template v-if="loggedIn">
         <li class="nav-item">
           <router-link to="/profile" class="nav-link">Profile</router-link>
         </li>
-        <li class="nav-item"><a href="#" @click.prevent="logout" class="nav-link" id="qsLogoutBtn">Log Out</a></li>
+        <li class="nav-item"></li>
       </template>
     </ul>
-    <span v-if="loggedIn && profile" class="navbar-text">
-      <img :src="profile.picture" :alt="profile.name" class="thumb rounded-circle">
-      {{ profile.name }}
-    </span>
+    <ul class="navbar-nav">
+      <li v-if="loggedIn && profile" class="nav-item navbar-text">
+        <img :src="profile.picture" :alt="profile.name" class="thumb rounded-circle">
+        <span class="profile-name">{{ profile.name }}</span>
+      </li>
+      <li v-if="loggedIn" class="nav-item">
+        <a href="#" @click.prevent="logout" class="nav-link" id="qsLogoutBtn">Log Out</a>
+      </li>
+      <li v-if="!loggedIn" class="nav-item">
+        <a href="#" id="qsLoginBtn" class="nav-link" @click.prevent="login">Login</a>
+      </li>
+    </ul>
   </div>
 </nav>  
 </template>
@@ -62,7 +67,16 @@ export default {
 }
 
 img.thumb {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+  margin-right: 5px;
+}
+
+.nav-link {
+  display: inline-block !important;
+}
+
+.profile-name {
+  color: #fff;
 }
 </style>
