@@ -30,6 +30,10 @@ class AuthService extends EventEmitter {
     this.tokenExpiry = null;
     this.profile = null;
 
+    webAuth.logout({
+      returnTo: process.env.VUE_APP_URI
+    });
+
     this.emit(loginEvent, { loggedIn: false });
   }
 
