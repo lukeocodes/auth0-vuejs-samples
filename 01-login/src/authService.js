@@ -12,14 +12,33 @@ const webAuth = new auth0.WebAuth({
 const localStorageKey = "loggedIn";
 const loginEvent = "loginEvent";
 
+const generateSecureString = () => {
+  const validChars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  let array = new Uint8Array(40);
+
+  window.crypto.getRandomValues(array);
+  array = array.map(x => validChars.charCodeAt(x % validChars.length));
+
+  return String.fromCharCode.apply(null, array);
+};
+
 class AuthService extends EventEmitter {
   idToken = null;
   profile = null;
   tokenExpiry = null;
 
   login(customState) {
+    const state = {
+      secureString: generateSecureString(),
+      customState: customState || {}
+    };
+
+    const encodedState = btoa(JSON.stringify(state));
+
     webAuth.authorize({
-      state: customState ? JSON.stringify(customState) : ""
+      state: encodedState
     });
   }
 
@@ -88,12 +107,19 @@ class AuthService extends EventEmitter {
 
     localStorage.setItem(localStorageKey, "true");
 
+    let parsedState = {};
+
+    try {
+      parsedState = JSON.parse(atob(authResult.state));
+    } catch (e) {
+      parsedState = {};
+    }
+
     this.emit(loginEvent, {
       loggedIn: true,
       profile: authResult.idTokenPayload,
       state: authResult.state,
-      stateJson:
-        authResult.state.indexOf("{") === 0 ? JSON.parse(authResult.state) : {}
+      stateJson: parsedState.customState || {}
     });
   }
 }

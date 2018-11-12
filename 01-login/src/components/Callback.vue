@@ -11,7 +11,7 @@ export default {
   methods: {
     handleLoginEvent(data) {
       if (data.stateJson && data.stateJson.target) {
-        this.$router.push(data.stateJson.target);
+        this.$router.push(data.stateJson.target || "/");
       } else {
         this.$router.push("/");
       }

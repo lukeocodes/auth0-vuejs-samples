@@ -7,7 +7,7 @@ import auth from "./authService";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -19,16 +19,7 @@ export default new Router({
     {
       path: "/profile",
       name: "profile",
-      component: Profile,
-      beforeEnter: (to, from, next) => {
-        if (!auth.isAuthenticated()) {
-          auth.login({
-            target: "/profile"
-          });
-        } else {
-          next();
-        }
-      }
+      component: Profile
     },
     {
       path: "/callback",
@@ -37,3 +28,13 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.path === "/" || to.path === "/callback" || auth.isAuthenticated()) {
+    return next();
+  }
+
+  auth.login({ target: to.path });
+});
+
+export default router;
