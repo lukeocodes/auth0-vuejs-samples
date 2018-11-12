@@ -5,8 +5,9 @@ const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
   redirectUri: `${process.env.VUE_APP_URI}/callback`,
   clientID: process.env.VUE_APP_AUTH0_CLIENTID,
-  responseType: "id_token",
-  scope: "openid profile email"
+  responseType: "token id_token",
+  scope: "openid profile email",
+  audience: process.env.VUE_APP_AUTH0_AUDIENCE
 });
 
 const localStorageKey = "loggedIn";
@@ -26,8 +27,10 @@ const generateSecureString = () => {
 
 class AuthService extends EventEmitter {
   idToken = null;
+  accessToken = null;
   profile = null;
   tokenExpiry = null;
+  accessTokenExpiry = null;
 
   login(customState) {
     const state = {
@@ -46,8 +49,10 @@ class AuthService extends EventEmitter {
     localStorage.removeItem(localStorageKey);
 
     this.idToken = null;
+    this.accessToken = null;
     this.tokenExpiry = null;
     this.profile = null;
+    this.accessTokenExpiry = null;
 
     webAuth.logout({
       returnTo: process.env.VUE_APP_URI
@@ -77,6 +82,14 @@ class AuthService extends EventEmitter {
     return this.idToken && this.tokenExpiry && this.tokenExpiry > Date.now();
   }
 
+  isAccessTokenValid() {
+    return (
+      this.accessToken &&
+      this.accessTokenExpiry &&
+      this.accessTokenExpiry > Date.now()
+    );
+  }
+
   popupCallBack() {
     webAuth.popup.callback({});
   }
@@ -100,10 +113,29 @@ class AuthService extends EventEmitter {
     });
   }
 
+  getAccessToken() {
+    return new Promise((resolve, reject) => {
+      if (this.isAccessTokenValid()) {
+        resolve(this.accessToken);
+      } else {
+        webAuth.checkSession({}, (err, authResult) => {
+          if (err) {
+            reject(err);
+          } else {
+            this.localLogin(authResult);
+            resolve(authResult.accessToken);
+          }
+        });
+      }
+    });
+  }
+
   localLogin(authResult) {
     this.idToken = authResult.idToken;
+    this.accessToken = authResult.accessToken;
     this.profile = authResult.idTokenPayload;
     this.tokenExpiry = new Date(this.profile.exp * 1000);
+    this.accessTokenExpiry = new Date(Date.now() + authResult.expiresIn * 1000);
 
     localStorage.setItem(localStorageKey, "true");
 
