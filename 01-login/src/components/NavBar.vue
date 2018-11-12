@@ -14,7 +14,7 @@
           <router-link to="/profile" class="nav-link">Profile</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/ping-api" class="nav-link">Ping API</router-link>
+          <router-link to="/backend-api" class="nav-link">Backend API</router-link>
         </li>
         <li class="nav-item"></li>
       </template>
