@@ -6,8 +6,12 @@ const jwt = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
 const app = express();
 
-if (!process.env.VUE_APP_AUTH0_DOMAIN || !process.env.VUE_APP_AUTH0_CLIENTID) {
-  throw "Make sure you have VUE_APP_AUTH0_DOMAIN and VUE_APP_AUTH0_CLIENTID in your .env file";
+if (
+  !process.env.VUE_APP_AUTH0_DOMAIN ||
+  !process.env.VUE_APP_AUTH0_CLIENTID ||
+  !process.env.VUE_APP_AUTH0_AUDIENCE
+) {
+  throw "Make sure you have VUE_APP_AUTH0_DOMAIN, VUE_APP_AUTH0_AUDIENCE and VUE_APP_AUTH0_CLIENTID in your .env file";
 }
 
 app.use(morgan("dev"));
@@ -22,7 +26,10 @@ const checkJwt = jwt({
     jwksUri: `https://${process.env.VUE_APP_AUTH0_DOMAIN}/.well-known/jwks.json`
   }),
 
-  audience: process.env.VUE_APP_AUTH0_CLIENTID,
+  audience: [
+    process.env.VUE_APP_AUTH0_CLIENTID,
+    process.env.VUE_APP_AUTH0_AUDIENCE
+  ],
   issuer: `https://${process.env.VUE_APP_AUTH0_DOMAIN}/`,
   algorithm: ["RS256"]
 });
@@ -30,6 +37,12 @@ const checkJwt = jwt({
 app.get("/api/private", checkJwt, (req, res) => {
   res.send({
     msg: "Your ID token was successfully validated!"
+  });
+});
+
+app.get("/api/external", checkJwt, (req, res) => {
+  res.send({
+    msg: "Your access token was successfully validated!"
   });
 });
 

@@ -3,7 +3,8 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Profile from "./views/Profile.vue";
 import Callback from "./components/Callback.vue";
-import ApiView from "./views/BackendApi.vue";
+import BackendApi from "./views/BackendApi.vue";
+import ExternalApi from "./views/ExternalApi.vue";
 import auth from "./authService";
 
 Vue.use(Router);
@@ -30,7 +31,11 @@ const router = new Router({
     {
       path: "/backend-api",
       name: "api_calls",
-      component: ApiView
+      component: BackendApi
+    },
+    {
+      path: "/external-api",
+      component: ExternalApi
     },
     {
       path: "/callback",

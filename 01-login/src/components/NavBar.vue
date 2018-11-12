@@ -16,6 +16,9 @@
         <li class="nav-item">
           <router-link to="/backend-api" class="nav-link">Backend API</router-link>
         </li>
+        <li class="nav-item">
+          <router-link to="/external-api" class="nav-link">External API</router-link>
+        </li>
         <li class="nav-item"></li>
       </template>
     </ul>
