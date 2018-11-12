@@ -29,12 +29,19 @@ export default {
     async callApi() {
       const idToken = await auth.getIdToken();
 
-      const { data } = await this.$http.get("/api/private", {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
-      });
-      this.apiMessage = data.msg;
+      try {
+        const { data } = await this.$http.get("/api/private", {
+          headers: {
+            Authorization: `Bearer ${idToken}`
+          }
+        });
+
+        this.apiMessage = `Response from the server: ${data.msg}`;
+      } catch (e) {
+        this.apiMessage = `Error: the server responded with '${
+          e.response.status
+        }: ${e.response.statusText}'`;
+      }
     }
   }
 };
