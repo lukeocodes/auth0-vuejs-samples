@@ -4,7 +4,7 @@
       <h1>Backend API</h1>
       <p>Ping your back-end API by clicking the button below. This will call the API endpoint using your ID token.</p>
 
-      <button class="btn btn-primary" @click="callApi">Call API</button>
+      <button class="btn btn-primary" @click="callApi">Ping</button>
     </div>
 
     <div v-if="apiMessage">
