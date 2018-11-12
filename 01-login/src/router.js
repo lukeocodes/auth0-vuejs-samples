@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Profile from "./views/Profile.vue";
 import Callback from "./components/Callback.vue";
+import ApiView from "./views/Api.vue";
 import auth from "./authService";
 
 Vue.use(Router);
@@ -20,6 +21,11 @@ const router = new Router({
       path: "/profile",
       name: "profile",
       component: Profile
+    },
+    {
+      path: "/ping-api",
+      name: "api_calls",
+      component: ApiView
     },
     {
       path: "/callback",
