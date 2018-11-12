@@ -62,7 +62,7 @@ class AuthService extends EventEmitter {
     webAuth.popup.callback({});
   }
 
-  refreshAuthState() {
+  getIdToken() {
     return new Promise((resolve, reject) => {
       if (this.isIdTokenValid()) {
         resolve(this.idToken);

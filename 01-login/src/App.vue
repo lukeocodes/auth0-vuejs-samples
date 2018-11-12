@@ -19,7 +19,7 @@ export default {
   },
   async created() {
     try {
-      await auth.refreshAuthState();
+      await auth.getIdToken();
     } catch (e) {
       console.log(e);
     }
