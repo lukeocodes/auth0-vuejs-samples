@@ -10,6 +10,12 @@ npm install
 npm run serve
 ```
 
+### Compiles and serves the Vue app, and starts the backend API server on port 3001
+
+```
+npm run dev
+```
+
 ### Compiles and minifies for production
 ```
 npm run build
