@@ -136,9 +136,6 @@ class AuthService extends EventEmitter {
     this.profile = authResult.idTokenPayload;
     this.tokenExpiry = new Date(this.profile.exp * 1000);
     this.accessTokenExpiry = new Date(Date.now() + authResult.expiresIn * 1000);
-    
-    console.log(authResult);
-    console.log(this.accessTokenExpiry);
 
     localStorage.setItem(localStorageKey, "true");
 

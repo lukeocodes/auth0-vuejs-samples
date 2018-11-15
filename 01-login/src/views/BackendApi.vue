@@ -16,16 +16,24 @@
 </template>
 
 <script>
+import auth from "../authService";
+
 export default {
   name: "Api",
   data() {
     return {
       apiMessage: null
-    }
+    };
   },
   methods: {
     async callApi() {
-      const { data } = await this.$http.get('/api/private')
+      const idToken = await auth.getIdToken();
+
+      const { data } = await this.$http.get("/api/private", {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      });
       this.apiMessage = data.msg;
     }
   }
