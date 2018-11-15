@@ -1,4 +1,4 @@
-# 01-login
+# Scenario #1 - Logging In and Gated Content
 
 This sample demonstrates:
 
