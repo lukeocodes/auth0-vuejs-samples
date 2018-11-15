@@ -1,5 +1,11 @@
 # 01-login
 
+This sample demonstrates:
+
+* Logging in to Auth0 using Redirect Mode
+* Accessing profile information that has been provided in the ID token
+* Gated content. `/profile` is not accessible without having first logged in
+
 ## Project setup
 ```
 npm install
