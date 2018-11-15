@@ -26,11 +26,6 @@ const router = new Router({
     {
       path: "/backend-api",
       name: "api_calls",
-      component: ApiView
-    },
-    {
-      path: "/backend-api",
-      name: "api_calls",
       component: BackendApi
     },
     {
