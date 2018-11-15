@@ -1,4 +1,6 @@
-# 01-login
+# Scenario #3 - Calling an External API
+
+This scenario is very similar to Scenario 2, in that it demonstrates making an API call. For this scenario, an additional endpoint has been included that requires the bearer token to be an access token (as provided during the authentication flow), and is validated with the audience set to the identifier of your API as set up in the Auth0 dashboard.
 
 ## Project setup
 ```
