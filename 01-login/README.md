@@ -1,4 +1,8 @@
-# 01-login
+# Scenario #2 - Calling a Backend API
+
+This scenario demonstrates calling a backend API using the ID token provided during the authenticated flow. In this scenario, an [Express](https://expressjs.com/) server is started when running the project using `npm run dev`, and provides an API endpoint.
+
+The endpoint requires an ID token to be provided in the `Authorization` header to be successful. In this case, the token is validated with the audience set to the Client ID of the Auth0 application, and an API entity is not required to exist for this to work.
 
 ## Project setup
 ```
